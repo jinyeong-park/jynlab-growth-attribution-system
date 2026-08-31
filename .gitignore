@@ -1,0 +1,16 @@
+# Raw exports may contain PII or account-level data — never commit these
+attribution/python/data/*
+*.csv
+!attribution/python/data/.gitkeep
+
+# Credentials
+.env
+google-ads.yaml
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store

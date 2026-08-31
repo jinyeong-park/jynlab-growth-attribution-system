@@ -1,0 +1,3 @@
+pandas
+google-ads
+google-analytics-data
