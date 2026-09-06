@@ -50,7 +50,7 @@ flowchart LR
 
 ## Technical Highlights & Code Samples
 
-### 1. Advanced SQL Window Functions for Touchpoint Sequence
+### 1. SQL Window Functions for Touchpoint Sequence
 
 The SQL pipeline utilizes CTEs and PostgreSQL window functions (`ROW_NUMBER`, `FIRST_VALUE`, `LAG`) to map out chronological user journeys and assign time-decay weights:
 
