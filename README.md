@@ -19,13 +19,14 @@ Modern ad platforms (Meta, Google, TikTok) often over-report conversion metrics 
 ---
 
 ## 🏗️ System Architecture & Data Flow
-[Raw Ad Spend Logs]
-│
-▼
-[PostgreSQL Pipeline] ──> [SQL MTA Models] ──> [Geo-Holdout Test] ──> [Streamlit Executive App]
-[User Touchpoint Logs] / (Cleaning & Deduplication) (First/Last/Decay) (Incrementality Lift) (Decision Dashboard)
 
-text
+```mermaid
+flowchart LR
+    A[Raw Ad Spend Logs] --> C[PostgreSQL Pipeline<br/><i>Cleaning & Deduplication</i>]
+    B[User Touchpoint Logs] --> C
+    C --> D[SQL MTA Models<br/><i>First / Last / Time-Decay</i>]
+    D --> E[Geo-Holdout Test<br/><i>Incrementality Lift Analysis</i>]
+    E --> F[Streamlit Executive App<br/><i>Decision Dashboard</i>]
 
 1. **Ingestion & Cleaning:** Ingests raw cross-channel event logs and handles data anomalies (missing UTMs, inconsistent case naming, and duplicate timestamps).
 2. **Attribution Engine (SQL):** Runs window-function-driven models (First-Touch, Last-Touch, Linear, Time-Decay) to re-attribute conversion touchpoints.
@@ -84,10 +85,13 @@ FROM (
 ) t
 GROUP BY channel
 ORDER BY time_decay_attributed_revenue DESC;
+
+
 2. Geo-Holdout Incrementality & Lift Calculation (Python)
 Evaluates treatment DMAs (Meta ads active) vs. control DMAs (Meta ads turned off for 30 days) to compute true Incremental Cost Per Acquisition (iCAC):
 
 python
+```
 import pandas as pd
 import numpy as np
 
@@ -108,8 +112,10 @@ def calculate_geo_incrementality(df_treatment: pd.DataFrame, df_control: pd.Data
         "incremental_conversions": round(incremental_conversions, 0),
         "incremental_cac_usd": round(incremental_cac, 2)
     }
+```
+
 📂 Repository Structure
-text
+
 ├── data/
 │   ├── raw_ad_spend.csv              # Synthetic spend & platform-reported logs
 │   └── user_touchpoint_events.csv    # Clickstream event logs with injected data noise
@@ -126,31 +132,44 @@ text
 │   └── tracking_plan.md              # Event taxonomy & Tracking spec sheet
 ├── requirements.txt                  # Python dependency specifications
 └── README.md                         # Project documentation
+
+
+
 ⚡ Quickstart & Reproducibility
-Clone the repository:
+1. Clone the repository:
 
 bash
+```
 git clone https://github.com/jinyeong-park/jynlab-growth-attribution-system.git
 cd jynlab-growth-attribution-system
-Set up Python Virtual Environment & Install Dependencies:
+```
+
+2. Set up Python Virtual Environment & Install Dependencies:
 
 bash
+```
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-Generate Synthetic Datasets:
+```
+
+3. Generate Synthetic Datasets:
 
 bash
+```
 python scripts/generate_synthetic_data.py
-Run Streamlit Executive Dashboard:
+```
+
+4. Run Streamlit Executive Dashboard:
 
 bash
+```
 streamlit run app/app.py
+```
+
 📬 Contact & Connect
 Jenny Park — Marketing & Growth Analytics Specialist
-
 📍 Location: San Jose, California
 💼 LinkedIn: linkedin.com/in/jennypark7
-
 ✉️ Email: byjennypark@gmail.com
 
