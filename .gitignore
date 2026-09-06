@@ -1,6 +1,7 @@
 # Raw exports may contain PII or account-level data — never commit these
 attribution/python/data/*
 *.csv
+!data/**/*.csv
 !attribution/python/data/.gitkeep
 
 # Credentials
