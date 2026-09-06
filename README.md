@@ -86,7 +86,7 @@ FROM (
 ) t
 GROUP BY channel
 ORDER BY time_decay_attributed_revenue DESC;
-
+```
 
 2. Geo-Holdout Incrementality & Lift Calculation (Python)
 Evaluates treatment DMAs (Meta ads active) vs. control DMAs (Meta ads turned off for 30 days) to compute true Incremental Cost Per Acquisition (iCAC):
