@@ -27,7 +27,7 @@ flowchart LR
     C --> D[SQL MTA Models<br/>First / Last / Time-Decay]
     D --> E[Geo-Holdout Test<br/>Incrementality Lift Analysis]
     E --> F[Streamlit Executive App<br/>Decision Dashboard]
-
+```
 
 1. **Ingestion & Cleaning:** Ingests raw cross-channel event logs and handles data anomalies (missing UTMs, inconsistent case naming, and duplicate timestamps).
 2. **Attribution Engine (SQL):** Runs window-function-driven models (First-Touch, Last-Touch, Linear, Time-Decay) to re-attribute conversion touchpoints.
