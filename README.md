@@ -116,7 +116,7 @@ def calculate_geo_incrementality(df_treatment: pd.DataFrame, df_control: pd.Data
 ```
 
 📂 Repository Structure
-
+```
 ├── data/
 │   ├── raw_ad_spend.csv              # Synthetic spend & platform-reported logs
 │   └── user_touchpoint_events.csv    # Clickstream event logs with injected data noise
@@ -134,7 +134,7 @@ def calculate_geo_incrementality(df_treatment: pd.DataFrame, df_control: pd.Data
 ├── requirements.txt                  # Python dependency specifications
 └── README.md                         # Project documentation
 
-
+```
 
 ⚡ Quickstart & Reproducibility
 1. Clone the repository:
@@ -168,9 +168,4 @@ bash
 streamlit run app/app.py
 ```
 
-📬 Contact & Connect
-Jenny Park — Marketing & Growth Analytics Specialist
-📍 Location: San Jose, California
-💼 LinkedIn: linkedin.com/in/jennypark7
-✉️ Email: byjennypark@gmail.com
 
