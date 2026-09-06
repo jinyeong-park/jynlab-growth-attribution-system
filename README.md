@@ -9,7 +9,7 @@ An end-to-end growth analytics system that uncovers true campaign ROI by resolvi
 
 ---
 
-## 📌 Executive Summary
+## Executive Summary
 
 Modern ad platforms (Meta, Google, TikTok) often over-report conversion metrics due to self-attribution bias and overlapping cookie windows. This project addresses the post-iOS 14 signal loss by building a **deterministic clickstream attribution model** alongside a **matched-market geo-holdout experiment**.
 
@@ -18,7 +18,7 @@ Modern ad platforms (Meta, Google, TikTok) often over-report conversion metrics 
 
 ---
 
-## 🏗️ System Architecture & Data Flow
+## System Architecture & Data Flow
 
 ```mermaid
 flowchart LR
@@ -48,7 +48,7 @@ flowchart LR
 
 ---
 
-## 🛠️ Technical Highlights & Code Samples
+## Technical Highlights & Code Samples
 
 ### 1. Advanced SQL Window Functions for Touchpoint Sequence
 
