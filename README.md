@@ -22,11 +22,12 @@ Modern ad platforms (Meta, Google, TikTok) often over-report conversion metrics 
 
 ```mermaid
 flowchart LR
-    A[Raw Ad Spend Logs] --> C[PostgreSQL Pipeline<br/><i>Cleaning & Deduplication</i>]
+    A[Raw Ad Spend Logs] --> C[PostgreSQL Pipeline<br/>Cleaning & Deduplication]
     B[User Touchpoint Logs] --> C
-    C --> D[SQL MTA Models<br/><i>First / Last / Time-Decay</i>]
-    D --> E[Geo-Holdout Test<br/><i>Incrementality Lift Analysis</i>]
-    E --> F[Streamlit Executive App<br/><i>Decision Dashboard</i>]
+    C --> D[SQL MTA Models<br/>First / Last / Time-Decay]
+    D --> E[Geo-Holdout Test<br/>Incrementality Lift Analysis]
+    E --> F[Streamlit Executive App<br/>Decision Dashboard]
+
 
 1. **Ingestion & Cleaning:** Ingests raw cross-channel event logs and handles data anomalies (missing UTMs, inconsistent case naming, and duplicate timestamps).
 2. **Attribution Engine (SQL):** Runs window-function-driven models (First-Touch, Last-Touch, Linear, Time-Decay) to re-attribute conversion touchpoints.
