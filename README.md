@@ -32,7 +32,11 @@ Modern ad platforms (Meta, Google, TikTok) over-report conversion metrics due to
 
 ## Data Provenance & Real-World Ingestion Pipelines
 
-In production enterprise environments, growth analysts do not manually download CSVs from ad dashboards. Instead, automated ETL/ELT pipelines ingest data into a Cloud Data Warehouse (BigQuery, Snowflake, Redshift). The datasets in `data/raw/` simulate these three core enterprise data sources:
+In production enterprise environments, growth analysts do not manually download CSVs from ad dashboards. Instead, automated ETL/ELT pipelines ingest data into a Cloud Data Warehouse (BigQuery, Snowflake, Redshift).
+
+> **Note on Synthetic Data:** The analytical methods and findings in this project are grounded in real professional experience working on cross-channel attribution and incrementality measurement. However, the actual company data from those engagements is strictly confidential and proprietary — it cannot be shared or reproduced outside of the organization's data infrastructure. The datasets in `data/raw/` are therefore synthetically generated to mirror the same schema, statistical distributions, and real-world noise patterns (UTM inconsistencies, duplicate events, platform over-reporting) encountered in production, allowing the full methodology to be demonstrated and reproduced publicly.
+
+The datasets in `data/raw/` simulate these three core enterprise data sources:
 
 ```mermaid
 flowchart TD

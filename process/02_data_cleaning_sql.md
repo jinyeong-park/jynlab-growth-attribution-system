@@ -2,6 +2,15 @@
 
 > **Core Question:** How do we remove noise from raw data so that downstream attribution models produce reliable results?
 
+> **dbt Implementation:** The SQL patterns described in this document are implemented as runnable dbt models in [`../dbt/`](../dbt/README.md).
+>
+> | Cleaning Step | dbt Model |
+> |---------------|-----------|
+> | UTM normalization + channel mapping | `models/staging/stg_user_touchpoints.sql` |
+> | Duplicate event removal | `models/intermediate/int_deduped_touchpoints.sql` |
+> | Attribution window JOIN | `models/intermediate/int_pre_conversion_touchpoints.sql` |
+> | Data quality checks | `tests/assert_no_post_conversion_touchpoints.sql`, `tests/assert_no_duplicate_event_ids.sql` |
+
 ---
 
 ## Why Data Cleaning Is the Most Important Phase

@@ -224,6 +224,19 @@ The datasets in `data/raw/` are therefore synthetically generated using a Python
 
 ---
 
+## Loading Data into the Pipeline
+
+In this project, the three CSV files in `data/raw/` are loaded into PostgreSQL using **dbt seeds** — a dbt command that ingests local CSV files directly into the database as tables. This replaces the manual "import CSV" step you would do in a database GUI.
+
+```bash
+dbt seed
+# Creates: raw.raw_ad_spend, raw.raw_user_touchpoints, raw.raw_conversions
+```
+
+From there, dbt models handle all cleaning and transformation automatically. See [`../dbt/README.md`](../dbt/README.md) for setup and execution instructions.
+
+---
+
 ## Next Step
 
 With raw data in hand, it must be cleaned before any analysis can begin.

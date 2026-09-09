@@ -1,7 +1,6 @@
 # Growth Attribution System — End-to-End Process Guide
 
 > **Purpose:** A step-by-step walkthrough of the entire pipeline from data acquisition to marketing decisions.
-> Anyone in a Data Analyst, Marketing Analyst, or Growth Analyst role can follow this guide to reproduce the project from scratch.
 
 ---
 
@@ -13,75 +12,63 @@
 ```
 
 ```
-Ad Platform APIs      SQL LOWER()         First-Touch SQL       Geo-Holdout        Budget
-(Meta / Google /  →   UTM normalization → Last-Touch SQL    →   Experiment     →   Reallocation
- TikTok)              Deduplication       Time-Decay SQL         iCAC Calculation   ROI Reporting
-GA4 / Segment
-Backend DB
+Ad Platform APIs      dbt staging         dbt marts             Python             Budget
+(Meta / Google /  →   UTM normalization → First-Touch       →   Geo-Holdout    →   Reallocation
+ TikTok)              Deduplication       Last-Touch             Experiment         ROI Reporting
+GA4 / Segment         Attribution Window  Linear                 iCAC Calculation
+Backend DB            (int_ models)       Time-Decay
 ```
+
+> **Production Implementation:** The SQL concepts in Phases 2 and 3 are implemented as a
+> runnable **dbt project** in [`../dbt/`](../dbt/README.md).
+> Staging models handle cleaning, intermediate models handle joins, and mart models produce
+> the four attribution outputs. See the dbt README for setup and execution instructions.
 
 ---
 
 ## Phase Overview
 
-| Phase | What Happens | Primary Role | Deep-Dive File |
-|-------|--------------|--------------|----------------|
-| 1 | Data Acquisition — How real companies collect ad and conversion data | All roles | [01_data_acquisition.md](./01_data_acquisition.md) |
-| 2 | Data Cleaning — Removing noise and standardizing raw data with SQL | Data Analyst | [02_data_cleaning_sql.md](./02_data_cleaning_sql.md) |
-| 3 | Attribution Modeling — Calculating channel-level conversion credit | Data Analyst / Data Scientist | [03_attribution_models_sql.md](./03_attribution_models_sql.md) |
-| 4 | Geo-Holdout Experiment — Measuring true incremental lift with Python | Data Scientist / Growth Analyst | [04_geo_holdout_python.md](./04_geo_holdout_python.md) |
-| 5 | Marketing Insights & Decisions — Interpreting results and adjusting budgets | Marketing Analyst / Growth Lead | [05_marketing_insights.md](./05_marketing_insights.md) |
+| Phase | What Happens                                                                | dbt Models                   | Deep-Dive File                                                 |
+| ----- | --------------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| 1     | Data Acquisition — How real companies collect ad and conversion data        | Seeds (`raw_*`)              | [01_data_acquisition.md](./01_data_acquisition.md)             |
+| 2     | Data Cleaning — UTM normalization, deduplication, attribution window        | `stg_*` → `int_*`            | [02_data_cleaning_sql.md](./02_data_cleaning_sql.md)           |
+| 3     | Attribution Modeling — Calculating channel-level conversion credit          | `mrt_*_attribution`          | [03_attribution_models_sql.md](./03_attribution_models_sql.md) |
+| 4     | Geo-Holdout Experiment — Measuring true incremental lift with Python        | _(Python only)_              | [04_geo_holdout_python.md](./04_geo_holdout_python.md)         |
+| 5     | Marketing Insights & Decisions — Interpreting results and adjusting budgets | `mrt_attribution_comparison` | [05_marketing_insights.md](./05_marketing_insights.md)         |
 
 ---
 
-## Reading Guide by Role
+## Recommended Reading Order
 
-You do not need to read everything. Start with the section most relevant to your role.
+Follow the phases in order — each phase builds on the previous one.
 
-### Marketing Analyst / Growth Marketer
-> Focused on interpreting results and setting channel strategy.
-
-**Recommended order:** Phase 1 (conceptual overview) → Phase 5 (decision-making) → Phase 3 (understand why the numbers differ)
-
-1. [01_data_acquisition.md](./01_data_acquisition.md) — Understand where the data comes from at a high level
-2. [05_marketing_insights.md](./05_marketing_insights.md) — The most important file: ROAS, iCAC, budget reallocation
-3. [03_attribution_models_sql.md](./03_attribution_models_sql.md) — Why each attribution model produces different numbers
-
-### Data Analyst
-> Focused on cleaning data and building attribution models in SQL.
-
-**Recommended order:** Follow phases 1 through 3 in order.
-
-1. [01_data_acquisition.md](./01_data_acquisition.md)
-2. [02_data_cleaning_sql.md](./02_data_cleaning_sql.md) — Core SQL cleaning patterns
-3. [03_attribution_models_sql.md](./03_attribution_models_sql.md) — Window functions and MTA logic
-
-### Data Scientist / Growth Analyst
-> Focused on experiment design and statistical validation.
-
-**Recommended order:** Skim phases 1–3, then focus on Phase 4.
-
-1. [01_data_acquisition.md](./01_data_acquisition.md)
-2. [03_attribution_models_sql.md](./03_attribution_models_sql.md) — Understand why SQL attribution alone is insufficient
-3. [04_geo_holdout_python.md](./04_geo_holdout_python.md) — Experiment design and Python incrementality code
+1. [01_data_acquisition.md](./01_data_acquisition.md) — Where the data comes from and how it lands in the warehouse
+2. [02_data_cleaning_sql.md](./02_data_cleaning_sql.md) — UTM normalization, deduplication, attribution window filter
+3. [03_attribution_models_sql.md](./03_attribution_models_sql.md) — First-Touch, Last-Touch, Linear, and Time-Decay models in SQL
+4. [`../dbt/README.md`](../dbt/README.md) — Run the full pipeline end-to-end with `dbt seed && dbt run && dbt test`
+5. [04_geo_holdout_python.md](./04_geo_holdout_python.md) — Geo-holdout experiment design and Python incrementality analysis
+6. [05_marketing_insights.md](./05_marketing_insights.md) — Interpreting results and reallocating budget
 
 ---
 
 ## Key Terms Glossary
 
-| Term | Plain-English Definition |
-|------|--------------------------|
-| **Attribution** | The process of assigning credit to marketing channels for driving a conversion |
-| **Multi-Touch Attribution (MTA)** | A class of models that distribute conversion credit across all touchpoints in the user journey, not just the first or last click |
-| **Self-Attribution Bias** | Each ad platform (Meta, Google) independently claims credit for the same conversion, leading to double-counting |
-| **ROAS** | Return on Ad Spend — revenue generated per dollar of ad spend |
-| **iCAC** | Incremental Cost per Acquisition — cost to acquire one additional customer that would not have converted organically |
-| **Geo-Holdout** | An experiment where ads are paused in a subset of geographic markets (control) to measure the baseline conversion rate vs. markets where ads remain active (treatment) |
-| **DMA** | Designated Market Area — a U.S. regional advertising market unit (e.g., NYC, LA, Chicago) |
-| **UTM Parameters** | Tracking tags appended to URLs that identify how users arrived at a site (utm_source, utm_medium, utm_campaign) |
-| **ETL / ELT** | Extract-Transform-Load — the pipeline that moves data from source systems into a data warehouse |
-| **CDC** | Change Data Capture — technology that detects and replicates database changes in real time |
-| **Attribution Window** | The lookback period used to determine which touchpoints are eligible for attribution credit (e.g., 7-day, 30-day) |
+| Term                              | Definition                                                                                                                                                                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Attribution**                   | The process of assigning credit to marketing channels for driving a conversion                                                                                                                                                                   |
+| **Multi-Touch Attribution (MTA)** | A class of models that distribute conversion credit across all touchpoints in the user journey, not just the first or last click                                                                                                                 |
+| **Self-Attribution Bias**         | Each ad platform (Meta, Google) independently claims credit for the same conversion, leading to double-counting                                                                                                                                  |
+| **ROAS**                          | Return on Ad Spend — revenue generated per dollar of ad spend                                                                                                                                                                                    |
+| **iCAC**                          | Incremental Cost per Acquisition — cost to acquire one additional customer that would not have converted organically                                                                                                                             |
+| **Geo-Holdout**                   | An experiment where ads are paused in a subset of geographic markets (control) to measure the baseline conversion rate vs. markets where ads remain active (treatment)                                                                           |
+| **DMA**                           | Designated Market Area — a U.S. regional advertising market unit (e.g., NYC, LA, Chicago)                                                                                                                                                        |
+| **UTM Parameters**                | Tracking tags appended to URLs that identify how users arrived at a site (utm_source, utm_medium, utm_campaign)                                                                                                                                  |
+| **ETL / ELT**                     | Extract-Transform-Load — the pipeline that moves data from source systems into a data warehouse                                                                                                                                                  |
+| **CDC**                           | Change Data Capture — technology that detects and replicates database changes in real time                                                                                                                                                       |
+| **Attribution Window**            | The lookback period used to determine which touchpoints are eligible for attribution credit (e.g., 7-day, 30-day)                                                                                                                                |
+| **dbt**                           | Data Build Tool — the industry-standard framework for managing SQL transformations in a data warehouse. Adds `ref()` dependency management, automated tests, and self-generated documentation. Used in this project to implement Phases 2 and 3. |
+| **dbt seed**                      | A dbt command that loads local CSV files directly into the database as tables — replacing manual CSV imports                                                                                                                                     |
+| **dbt model**                     | A single SQL file in a dbt project that defines one table or view. Models reference each other with `ref('model_name')` instead of hardcoded table names                                                                                         |
 
 ---
 
@@ -110,12 +97,12 @@ The Solution:
 
 ## Final Results Summary
 
-| Channel | Platform-Reported ROAS | True Incremental ROAS | Action Taken |
-|---------|------------------------|----------------------|--------------|
-| Meta Paid Social | 3.25x | **1.26x** | Budget cut — high organic cannibalization |
-| Google Paid Search | 2.80x | **2.65x** | Budget increased — high incremental lift |
-| TikTok Ads | 1.60x | **2.10x** | Budget increased — strong new-user acquisition |
-| Blended Total | 2.80x | **1.91x** | $100K reallocated; Blended CAC fell 14.2% |
+| Channel            | Platform-Reported ROAS | True Incremental ROAS | Action Taken                                   |
+| ------------------ | ---------------------- | --------------------- | ---------------------------------------------- |
+| Meta Paid Social   | 3.25x                  | **1.26x**             | Budget cut — high organic cannibalization      |
+| Google Paid Search | 2.80x                  | **2.65x**             | Budget increased — high incremental lift       |
+| TikTok Ads         | 1.60x                  | **2.10x**             | Budget increased — strong new-user acquisition |
+| Blended Total      | 2.80x                  | **1.91x**             | $100K reallocated; Blended CAC fell 14.2%      |
 
 > Meta appeared to be the top performer based on platform reporting.
 > In reality, it was the lowest-incrementality channel — over 60% of its attributed
@@ -123,4 +110,4 @@ The Solution:
 
 ---
 
-*Follow the links in the Phase Overview table to read each section in detail.*
+_Follow the links in the Phase Overview table to read each section in detail._

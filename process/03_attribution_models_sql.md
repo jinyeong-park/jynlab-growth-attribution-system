@@ -2,6 +2,16 @@
 
 > **Core Question:** Across all the touchpoints a user had before converting, how much credit does each advertising channel deserve?
 
+> **dbt Implementation:** The attribution models described in this document are implemented as runnable dbt models in [`../dbt/`](../dbt/README.md).
+>
+> | Attribution Model | dbt Model |
+> |-------------------|-----------|
+> | First-Touch | `models/marts/mrt_first_touch_attribution.sql` |
+> | Last-Touch | `models/marts/mrt_last_touch_attribution.sql` |
+> | Linear | `models/marts/mrt_linear_attribution.sql` |
+> | Time-Decay | `models/marts/mrt_time_decay_attribution.sql` |
+> | All Models Side-by-Side | `models/marts/mrt_attribution_comparison.sql` |
+
 ---
 
 ## Why Attribution Modeling Is Necessary
