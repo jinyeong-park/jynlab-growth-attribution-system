@@ -66,10 +66,11 @@ This creates two different measurement problems.
 
 The SQL attribution engine reconstructs customer journeys and compares multiple attribution models:
 
-- First-Touch
-- Last-Touch
-- Linear
-- Time-Decay
+1. First-Touch
+2. Last-Touch
+3. Linear
+4. Time-Decay
+5. Position-Based (U-Shaped)
 
 ---
 
@@ -1082,6 +1083,7 @@ Compare:
 - Last-Touch
 - Linear
 - Time-Decay
+- Position-Based (U-Shaped)
 
 ---
 
