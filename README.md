@@ -1,6 +1,4 @@
-# Marketing Measurement & Attribution Intelligence Platform
-
-## Multi-Touch Attribution, Experimentation & Incrementality Measurement
+# Multi-Touch Attribution & Incrementality Analytics
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://www.python.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-4169E1?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
@@ -11,6 +9,7 @@ An end-to-end marketing measurement system that evaluates **true campaign perfor
 
 The project combines:
 
+- Marketing Measurement
 - Multi-Touch Attribution in SQL
 - Attribution Gap Detection
 - Geo-Holdout Experimentation
