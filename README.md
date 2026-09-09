@@ -122,14 +122,14 @@ WITH touchpoint_sequencing AS (
         EXTRACT(EPOCH FROM (MAX(t.timestamp) OVER (PARTITION BY t.user_id) - t.timestamp)) / 86400.0 AS days_before_conversion
     FROM user_touchpoint_events t
     INNER JOIN user_conversions c ON t.user_id = c.user_id
-    WHERE t.timestamp <= c.conversion_timestamp -- 전환 시점 이전의 터치포인트만 계산
+    WHERE t.timestamp <= c.conversion_timestamp -- only touchpoints before conversion event
 ),
 time_decay_weights AS (
     SELECT
         user_id,
         channel,
         order_value_usd,
-        -- 7일 반감기를 적용한 지수 감쇄 가중치: 2^(-days / 7)
+        -- exponential decay weight with 7-day half-life: 2^(-days / 7)
         POW(2, -days_before_conversion / 7.0) AS weight
     FROM touchpoint_sequencing
 )
